@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createPlayer } from "../services/textAlive";
 
 const SONG_URL =
-  "https://piapro.jp/t/6W2N";
+  "https://piapro.jp/t/6W2N/20251215164617";
 
 export const useTextAlive = () => {
   const [player, setPlayer] = useState(null);
