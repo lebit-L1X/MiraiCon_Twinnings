@@ -5,5 +5,6 @@ export const createPlayer = () => {
     app: {
       token: import.meta.env.VITE_TEXTALIVE_TOKEN,
     },
+    throttleInterval: 1000
   });
 };

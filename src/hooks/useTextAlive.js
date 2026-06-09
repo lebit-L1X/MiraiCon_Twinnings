@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import { createPlayer } from "../services/textAlive";
 
-const SONG_URL =
-  "https://piapro.jp/t/6W2N/20251215164617";
-
 export const useTextAlive = () => {
   const [player, setPlayer] = useState(null);
-  const [currentChar, setCurrentChar] = useState("");
+  const [currentPosition, setCurrentPosition] = useState(0);
   const [isReady, setIsReady] = useState(false);
+  const [isSongReady, setSongReady] = useState(false);
 
   useEffect(() => {
     const playerInstance = createPlayer();
 
-    playerInstance.addListener({
+    playerInstance.volume = 10;
+
+    let lastPosition = 0;
+    const playerListener = {
+      onAppReady(app){
+        setPlayer(playerInstance);
+        setIsReady(true);
+      },
+
       onVideoReady(video) {
         console.log(
           "Video ready:",
@@ -20,11 +26,16 @@ export const useTextAlive = () => {
           "characters"
         );
 
-        setIsReady(true);
+        setCurrentPosition(0);
+      },
+
+      onAppMediaChange(songUrl) {
+        console.log("Host requested new song:", songUrl);
       },
 
       onTimerReady() {
         console.log("Timer ready");
+        setSongReady(true);
       },
 
       onPlay() {
@@ -40,27 +51,23 @@ export const useTextAlive = () => {
       },
 
       onTimeUpdate(position) {
-        const char =
-          playerInstance.video?.findChar(position);
-
-        setCurrentChar(char?.text ?? "");
+        if (!playerInstance.video) return;
+        setCurrentPosition(position);  
       },
-    });
+    };
 
-    playerInstance
-      .createFromSongUrl(SONG_URL)
-      .then(() => {
-        setPlayer(playerInstance);
-      });
+    playerInstance.addListener(playerListener);
 
     return () => {
+      playerInstance.removeListener(playerListener);
       playerInstance.dispose?.();
     };
   }, []);
 
   return {
     player,
-    currentChar,
+    currentPosition,
     isReady,
+    isSongReady,
   };
 };

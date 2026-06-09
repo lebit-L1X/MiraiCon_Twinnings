@@ -1,16 +1,26 @@
 import { Lyrics } from "./components/Lyrics";
 import { Controls } from "./components/Controls";
 import { useTextAlive } from "./hooks/useTextAlive";
+import { SongList } from "./components/SongList";
+import { useState } from "react";
+import { PlayerContext } from "./context/PlayerContext";
 
 export const App = () => {
-  const {
-    player,
-    currentChar,
-    isReady,
-  } = useTextAlive();
+  const TextAlive = useTextAlive();
 
-  if (!isReady) {
-    return <h1>Loading song...</h1>;
+  const [selectedSong, setSelectedSong] = useState({});
+
+  const handleSelectSong = (song) => {
+    setSelectedSong(song);
+    
+    console.log("Selected song:", song);
+    if(!TextAlive.player.app.managed){
+      TextAlive.player.createFromSongUrl(song.musicUrl);
+    }
+  }
+
+  if (!TextAlive.isReady) {
+    return <h1>Loading player...</h1>;
   }
 
   return (
@@ -19,9 +29,12 @@ export const App = () => {
         padding: "2rem",
       }}
     >
-      <Lyrics text={currentChar} />
-
-      <Controls player={player} />
+        <PlayerContext.Provider value={TextAlive}>
+          <SongList onSelect={handleSelectSong} />
+          <h3>{selectedSong.title}</h3>
+          <Lyrics />
+          <Controls />
+        </PlayerContext.Provider>
     </div>
   );
 };

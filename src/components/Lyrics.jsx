@@ -1,4 +1,8 @@
-export const Lyrics = ({ text }) => {
+import { useContext } from "react";
+import { PlayerContext } from "../context/PlayerContext";
+
+export const Lyrics = () => {
+  const { player, currentPosition } = useContext(PlayerContext);
   return (
     <div
       style={{
@@ -7,7 +11,7 @@ export const Lyrics = ({ text }) => {
         marginBottom: "2rem",
       }}
     >
-      {text}
+      {player?.video?.findWord(currentPosition)?.text || ""}
     </div>
   );
 };
