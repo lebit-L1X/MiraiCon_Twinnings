@@ -29,8 +29,9 @@ export const App = () => {
     <PlayerContext.Provider value={TextAlive}>
       <div className="app">
         {/* Background */}
-        <GameCanvas />
-
+        <div className="game-canvas">
+          <GameCanvas />
+        </div>
         {/* Foreground UI */}
         <div className="overlay">
           <SongList onSelect={handleSelectSong} />
