@@ -10,9 +10,18 @@ export const GameCanvas = () => {
     game.init(ref.current);
 
     return () => {
-
+      
     };
   }, []);
 
-  return <div ref={ref} />;
-};
+return (
+  <div
+    ref={ref}
+    style={{
+      position: "fixed",
+      inset: 0,
+      zIndex: -1,
+    }}
+  />
+);
+}

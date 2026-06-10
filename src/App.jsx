@@ -1,9 +1,12 @@
 import { Lyrics } from "./components/Lyrics";
 import { Controls } from "./components/Controls";
-import { useTextAlive } from "./hooks/useTextAlive";
 import { SongList } from "./components/SongList";
-import { useState } from "react";
+import { GameCanvas } from "./components/GameCanvas";
+
+import { useTextAlive } from "./hooks/useTextAlive";
 import { PlayerContext } from "./context/PlayerContext";
+
+import { useState } from "react";
 
 export const App = () => {
   const TextAlive = useTextAlive();
@@ -12,27 +15,33 @@ export const App = () => {
 
   const handleSelectSong = (song) => {
     setSelectedSong(song);
-    
+
     console.log("Selected song:", song);
+
     TextAlive.player.createFromSongUrl(song.musicUrl);
-  }
+  };
 
   if (!TextAlive.isReady) {
     return <h1>Loading player...</h1>;
   }
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-      }}
-    >
-        <PlayerContext.Provider value={TextAlive}>
+    <PlayerContext.Provider value={TextAlive}>
+      <div className="app">
+        {/* Background */}
+        <GameCanvas />
+
+        {/* Foreground UI */}
+        <div className="overlay">
           <SongList onSelect={handleSelectSong} />
+
           <h3>{selectedSong.title}</h3>
+
           <Lyrics />
+
           <Controls />
-        </PlayerContext.Provider>
-    </div>
+        </div>
+      </div>
+    </PlayerContext.Provider>
   );
 };
