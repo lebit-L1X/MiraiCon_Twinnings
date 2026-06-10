@@ -7,6 +7,8 @@ export const useTextAlive = () => {
   const [isReady, setIsReady] = useState(false);
   const [isSongReady, setSongReady] = useState(false);
 
+  const [wordList, setWordList] = useState([]);
+
   useEffect(() => {
     const playerInstance = createPlayer();
 
@@ -14,23 +16,42 @@ export const useTextAlive = () => {
 
     let lastPosition = 0;
     const playerListener = {
+      onAppLoad(app, error){
+        if(error){
+          console.log(error);
+        }
+      },
+
       onAppReady(app){
         setPlayer(playerInstance);
         setIsReady(true);
+
+        if(app.managed){
+          console.log("YEA");
+        }
+        else{
+          console.log("AFAFA");
+        }
       },
 
       onVideoReady(video) {
         console.log(
           "Video ready:",
-          video.charCount,
+          video.wordCount,
           "characters"
         );
 
         setCurrentPosition(0);
       },
 
-      onAppMediaChange(songUrl) {
+      onAppMediaChange(songUrl, videoPromise) {
         console.log("Host requested new song:", songUrl);
+
+        if(videoPromise){
+          videoPromise.then((video) => {
+            console.log("New Video Ready");
+          })
+        }
       },
 
       onTimerReady() {
@@ -50,17 +71,31 @@ export const useTextAlive = () => {
         console.log("Playback stopped");
       },
 
+      onSongLoad(song, reason){
+        console.log(reason);
+
+        setCurrentPosition(0);
+        setSongReady(false);
+      },
+
       onTimeUpdate(position) {
         if (!playerInstance.video) return;
         setCurrentPosition(position);  
       },
+      
+      onDispose(){
+        playerInstance.removeListener(playerListener);
+      },
+
+      onThrottledTimeUpdate(position){
+        //load the next 10s Kana
+      }
     };
 
     playerInstance.addListener(playerListener);
 
     return () => {
-      playerInstance.removeListener(playerListener);
-      playerInstance.dispose?.();
+      playerInstance.dispose();
     };
   }, []);
 

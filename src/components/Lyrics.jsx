@@ -1,8 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { PlayerContext } from "../context/PlayerContext";
 
 export const Lyrics = () => {
   const { player, currentPosition } = useContext(PlayerContext);
+
+  const [lyricPipes, setLyricPipes] = useState([]);
   return (
     <div
       style={{

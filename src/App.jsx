@@ -14,9 +14,7 @@ export const App = () => {
     setSelectedSong(song);
     
     console.log("Selected song:", song);
-    if(!TextAlive.player.app.managed){
-      TextAlive.player.createFromSongUrl(song.musicUrl);
-    }
+    TextAlive.player.createFromSongUrl(song.musicUrl);
   }
 
   if (!TextAlive.isReady) {

@@ -42,7 +42,7 @@ export const Controls = () => {
           </button>
         </div> 
       :
-        <p>Please select a song to enable controls.</p>
+        <p>Please Wait.</p>
       }
     </>
   );
