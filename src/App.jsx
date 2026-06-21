@@ -1,12 +1,12 @@
 import { Lyrics } from "./components/Lyrics";
 import { Controls } from "./components/Controls";
 import { SongList } from "./components/SongList";
-import { GameCanvas } from "./components/GameCanvas";
-
+import { Canvas } from "./components/Canvas";
 import { useTextAlive } from "./hooks/useTextAlive";
 import { PlayerContext } from "./context/PlayerContext";
 
 import { useState } from "react";
+import { Experience } from "./components/Experience";
 
 export const App = () => {
   const TextAlive = useTextAlive();
@@ -28,11 +28,7 @@ export const App = () => {
   return (
     <PlayerContext.Provider value={TextAlive}>
       <div className="app">
-        {/* Background */}
-        <div className="game-canvas">
-          <GameCanvas />
-        </div>
-        {/* Foreground UI */}
+            <Experience></Experience>
         <div className="overlay">
           <SongList onSelect={handleSelectSong} />
 
