@@ -1,10 +1,11 @@
 import { Container, Sprite, Text } from "@pixi/react";
 import { Texture } from "pixi.js";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import backgroundAsset from "../assets/background.png";
-import itemAsset from "../assets/item.png";
-import { Floatable } from "./Floatable";
+
+import { Cotton } from "./Cotton";
+import { Kana } from "./Kana";
 
 const kanaPool = [
   "あ", "い", "う", "え", "お",
@@ -14,13 +15,13 @@ const kanaPool = [
   "な", "に", "ぬ", "ね", "の",
 ];
 
-export const Canvas = ({ canvasSize }) => {
-  const MAX_FLOWERS = 5;
-  const KANA_AMOUNT = 5;
+const MAX_FLOWERS = 5;
+const KANA_AMOUNT = 5;
 
+export function Canvas({ canvasSize }) {
   const backgroundTexture = Texture.from(backgroundAsset);
 
-  const [flowersCollected, setFlowersCollected] = useState(0);
+  const [score, setScore] = useState(0);
 
   const [flowers, setFlowers] = useState(
     Array.from({ length: MAX_FLOWERS }, (_, i) => ({
@@ -28,10 +29,10 @@ export const Canvas = ({ canvasSize }) => {
     }))
   );
 
-  const [kanaFloatables] = useState(() =>
+  const [kanas] = useState(() =>
     Array.from({ length: KANA_AMOUNT }, (_, i) => ({
       id: i,
-      kana: kanaPool[Math.floor(Math.random() * kanaPool.length)],
+      value: kanaPool[Math.floor(Math.random() * kanaPool.length)],
     }))
   );
 
@@ -45,7 +46,7 @@ export const Canvas = ({ canvasSize }) => {
         return [
           ...prev,
           {
-            id: Date.now() + Math.random(),
+            id: crypto.randomUUID(),
           },
         ];
       });
@@ -54,17 +55,24 @@ export const Canvas = ({ canvasSize }) => {
     return () => clearInterval(interval);
   }, []);
 
+  const collectFlower = (flowerId) => {
+    setScore((prev) => prev + 1);
+
+    setFlowers((prev) =>
+      prev.filter((flower) => flower.id !== flowerId)
+    );
+  };
+
   return (
-    <Container sortableChildren={true}>
+    <Container>
       <Sprite
         texture={backgroundTexture}
         width={canvasSize.width}
         height={canvasSize.height}
-        zIndex={0}
       />
 
       <Text
-        text={`Flowers: ${flowersCollected}`}
+        text={`Flowers: ${score}`}
         x={20}
         y={20}
         style={{
@@ -75,35 +83,20 @@ export const Canvas = ({ canvasSize }) => {
       />
 
       {flowers.map((flower) => (
-        <Floatable
+        <Cotton
           key={flower.id}
           canvasSize={canvasSize}
-          type="image"
-          content={itemAsset}
-          size={50}
-          incrementCounter={() => {
-            setFlowersCollected((v) => v + 1);
-
-            setFlowers((prev) =>
-              prev.filter((f) => f.id !== flower.id)
-            );
-          }}
+          onCollect={() => collectFlower(flower.id)}
         />
       ))}
 
-      {kanaFloatables.map((item) => (
-        <Floatable
-          key={`kana-${item.id}`}
+      {kanas.map((kana) => (
+        <Kana
+          key={kana.id}
           canvasSize={canvasSize}
-          type="text"
-          content={item.kana}
-          style={{
-            fill: "white",
-            fontSize: 72,
-            fontWeight: "bold",
-          }}
+          kana={kana.value}
         />
       ))}
     </Container>
   );
-};
+}
