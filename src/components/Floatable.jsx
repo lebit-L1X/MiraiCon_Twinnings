@@ -1,19 +1,22 @@
 import { Sprite, Text, useTick } from "@pixi/react";
 import { useRef, useState } from "react";
-
 export const Floatable = ({
     canvasSize,
     type = "image",
     content,
-    size = 100,
+    size = 50,
     style = {},
+    incrementCounter,
 }) => {
     const [, setTick] = useState(0);
+    const [collected, setCollected] = useState(false);
+
+
 
     const item = useRef(
         type === "image"
             ? {
-                x: Math.random() * canvasSize.width,
+                x: canvasSize.width + Math.random() * 200,
                 y: Math.random() * (canvasSize.height * (2 / 3)),
                 vx: 0.3 + Math.random() * 0.8,
                 t: Math.random() * 1000,
@@ -49,8 +52,11 @@ export const Floatable = ({
         }
 
         setTick((v) => v + 1);
-    });
 
+    });
+    if (collected) {
+        return null;
+    }
     if (type === "image") {
         return (
             <Sprite
@@ -60,6 +66,11 @@ export const Floatable = ({
                 anchor={0.5}
                 width={size}
                 height={size}
+                eventMode="dynamic"
+                cursor="pointer"
+                pointertap={() => {
+                    incrementCounter?.();
+                }}
             />
         );
     }
