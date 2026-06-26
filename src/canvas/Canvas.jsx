@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 
 import backgroundAsset from "../assets/background.png";
 
-import { Cotton } from "./Cotton";
-import { Kana } from "./Kana";
+import { Cotton } from "../sprite/Cotton";
+import { Kana } from "../sprite/Kana";
 
 const kanaPool = [
   "あ", "い", "う", "え", "お",

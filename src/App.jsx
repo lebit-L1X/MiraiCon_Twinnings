@@ -1,12 +1,12 @@
 import { Lyrics } from "./components/Lyrics";
 import { Controls } from "./components/Controls";
 import { SongList } from "./components/SongList";
-import { Canvas } from "./components/Canvas";
+import { Canvas } from "./canvas/Canvas";
 import { useTextAlive } from "./hooks/useTextAlive";
 import { PlayerContext } from "./context/PlayerContext";
 
 import { useState } from "react";
-import { Experience } from "./components/Experience";
+import { Experience } from "./canvas/Experience";
 
 export const App = () => {
   const TextAlive = useTextAlive();
