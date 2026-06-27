@@ -1,16 +1,4 @@
 
-.game {
-  position: fixed;
-  inset: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.game canvas {
-  display: block;
-  position: absolute;
-  inset: 0;
-}
 html,
 body {
   margin: 0 !important;

@@ -19,7 +19,7 @@ export const Experience = () => {
   const [canvasSize, setCanvasSize] = useState(calculateCanvasSize());
 
   const [score, setScore] = useState(0);
-  const [basketStage, setBasketStage] = useState(0);
+  const [isNight, setIsNight] = useState(false);
 
   const [flowers, setFlowers] = useState(
     Array.from({ length: MAX_FLOWERS }, (_, i) => ({
@@ -37,26 +37,6 @@ export const Experience = () => {
   const updateCanvasSize = useCallback(() => {
     setCanvasSize(calculateCanvasSize());
   }, []);
-
-  const collectFlower = (flowerId) => {
-    setScore((prev) => {
-      const newScore = prev + 1;
-
-      if (newScore >= 10) {
-        setBasketStage(2);
-      } else if (newScore >= 5) {
-        setBasketStage(1);
-      } else {
-        setBasketStage(0);
-      }
-
-      return newScore;
-    });
-
-    setFlowers((prev) =>
-      prev.filter((flower) => flower.id !== flowerId)
-    );
-  };
 
   useEffect(() => {
     window.addEventListener("resize", updateCanvasSize);
@@ -85,17 +65,38 @@ export const Experience = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const collectFlower = (flowerId) => {
+    setScore((prev) => prev + 1);
+
+    setFlowers((prev) =>
+      prev.filter((flower) => flower.id !== flowerId)
+    );
+  };
 
   return (
-    <Stage width={canvasSize.width} height={canvasSize.height}>
-      <Canvas
-        canvasSize={canvasSize}
-        score={score}
-        flowers={flowers}
-        kanas={kanas}
-        basketStage={basketStage}
-        onCollectFlower={collectFlower}
-      />
-    </Stage>
+    <>
+      <button
+        style={{
+          position: "fixed",
+          top: 20,
+          right: 20,
+          zIndex: 1000,
+        }}
+        onClick={() => setIsNight((prev) => !prev)}
+      >
+        Toggle Day / Night
+      </button>
+
+      <Stage width={canvasSize.width} height={canvasSize.height}>
+        <Canvas
+          canvasSize={canvasSize}
+          score={score}
+          flowers={flowers}
+          kanas={kanas}
+          isNight={isNight}
+          onCollectFlower={collectFlower}
+        />
+      </Stage>
+    </>
   );
 };
