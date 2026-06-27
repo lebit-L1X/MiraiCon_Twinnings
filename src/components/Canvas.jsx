@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Container, Sprite, Text, useTick } from "@pixi/react";
 import { Texture } from "pixi.js";
-import { useEffect, useState } from "react";
 
 import { Basket } from "./Basket";
 import { Cotton } from "./Cotton";
@@ -16,23 +16,23 @@ export function Canvas({
   kanas,
   onCollectFlower,
   basketStage,
+  isNight,
 }) {
   const dayTexture = Texture.from(backgroundAssetDay);
   const nightTexture = Texture.from(backgroundAssetNight);
 
   const [nightAlpha, setNightAlpha] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
-
-  useEffect(() => {
-    if (score >= 20) {
-      setTransitioning(true);
-    }
-  }, [score]);
 
   useTick((delta) => {
-    if (!transitioning) return;
+    const speed = 0.005;
 
-    setNightAlpha((prev) => Math.min(prev + delta * 0.01, 1));
+    setNightAlpha((prev) => {
+      if (isNight) {
+        return Math.min(prev + delta * speed, 1);
+      }
+
+      return Math.max(prev - delta * speed, 0);
+    });
   });
 
   return (
@@ -44,7 +44,7 @@ export function Canvas({
         height={canvasSize.height}
       />
 
-      {/* Night background fades in */}
+      {/* Night fades in/out */}
       <Sprite
         texture={nightTexture}
         width={canvasSize.width}
